@@ -81,47 +81,46 @@ def utility(board):
     """
     return (winner(board)=="X") - (winner(board)=="O")
 
-def min_value(board,v):
+def min_value(board):
     """
     Returns the minimizing choice
     """
+    v = float('inf')
     if terminal(board):
         return utility(board)
     for action in actions(board):
-        v = min(v,max_value(result(board,action),v))
+        v = min(v,max_value(result(board,action)))
     return v
 
 
-def max_value(board,v):
+def max_value(board):
     """
     Returns the maximizing choice
     """
+    v = float('-inf')
     if terminal(board):
         return utility(board)
     for action in actions(board):
-        v = max(v,min_value(result(board,action),v))
+        v = max(v,min_value(result(board,action)))
     return v
     
-
 
 def minimax(board):
     """
     Returns the optimal action for the current player on the board.
     """
     if player(board) == "O":
+        v = float('inf')
         for action in actions(board):
-            if min_value(result(board,action),float('inf'))==-1:
-                return action
-        for action in actions(board):
-            if min_value(result(board,action),float('inf'))==0:
-                return action
-            
+            if max_value(result(board,action))<v:
+                best_action = action
+                v = max_value(result(board,action))
+        return best_action
 
     else:
+        v = float('-inf')
         for action in actions(board):
-            if max_value(result(board,action),float('-inf'))==1:
-                return action
-        for action in actions(board):
-            if max_value(result(board,action),float('-inf'))==0:
-                return action
-        
+            if min_value(result(board,action))>v:
+                best_action = action
+                v = min_value(result(board,action))
+        return best_action
